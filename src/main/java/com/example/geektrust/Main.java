@@ -21,6 +21,6 @@ public class Main {
     }
 
     private static void readCommands(List<String> commands){
-        
+        System.out.println(commands);
     }
 }
