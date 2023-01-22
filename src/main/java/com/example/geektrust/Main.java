@@ -1,6 +1,5 @@
 package com.example.geektrust;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,11 +9,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args)  {
@@ -27,8 +24,8 @@ public class Main {
             //Converting json data to string
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonNode = mapper.readTree(new URL("https://geektrust.s3.ap-southeast-1.amazonaws.com/portfolio-overlap/stock_data.json"));
-            List<Funds> funds = mapper.convertValue(jsonNode.findParents("name"), new TypeReference<List<Funds>>(){});
-            readCommands(inputList,funds);
+            List<Funds_POJO> funds = mapper.convertValue(jsonNode.findParents("name"), new TypeReference<List<Funds_POJO>>(){});
+            executeCommands(inputList,funds);
         }
         catch(MalformedURLException e) {
             e.printStackTrace();
@@ -38,8 +35,13 @@ public class Main {
         }
     }
 
-    private static void readCommands(List<List<String>> inputList, List<Funds> funds) {
-        System.out.println(inputList);
-        System.out.println(funds.get(0).getName());
+    private static void executeCommands(List<List<String>> inputList, List<Funds_POJO> funds) {
+        Portfolio_Implementation portfolio = new Portfolio_Implementation(funds);
+        for(List<String> commands : inputList){
+            String command = commands.get(0);
+            if(command.equals(Commands.CURRENT_PORTFOLIO.toString())) portfolio.createPortfolio(commands);
+            else if(command.equals(Commands.ADD_STOCK.toString())) portfolio.addStock(commands);
+            else if(command.equals(Commands.CALCULATE_OVERLAP.toString()))portfolio.calculateOverlap(commands);
+        }
     }
 }

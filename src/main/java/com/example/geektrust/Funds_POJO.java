@@ -3,7 +3,10 @@ package com.example.geektrust;
 
 import java.util.List;
 
-public class Funds {
+public class Funds_POJO {
+    private String name;
+    private List<String> stocks;
+
     public String getName() {
         return name;
     }
@@ -20,6 +23,7 @@ public class Funds {
         this.stocks = stocks;
     }
 
-    private String name;
-    private List<String> stocks;
+    public void addStock(String stock){
+        stocks.add(stock);
+    }
 }
