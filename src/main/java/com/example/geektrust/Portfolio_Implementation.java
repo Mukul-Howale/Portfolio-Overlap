@@ -5,20 +5,21 @@ import java.util.*;
 public class Portfolio_Implementation{
     private final int fundName = 1;
     private final int stockName = 2;
-    private final Map<String, List<String>> portfolioFunds;
-    private final List<String> initialFunds;
+    private final Map<String, List<String>> portfolioFunds = new HashMap<>();
+    private final List<String> initialFunds = new ArrayList<>();
     Map<String, List<String>> funds;
 
     public Portfolio_Implementation(Map<String, List<String>> funds){
         this.funds = funds;
-        portfolioFunds = new HashMap<>();
-        initialFunds = new ArrayList<>();
     }
 
     // Creating a new portfolio with added funds
     public void createPortfolio(List<String> commands){
         for(int i=1; i<commands.size(); i++){
-            if(!funds.containsKey(commands.get(i))) System.out.println("FUND_NOT_FOUND");
+            if(!funds.containsKey(commands.get(i))) {
+                System.out.println("FUND_NOT_FOUND");
+                break;
+            }
             else {
                 portfolioFunds.put(commands.get(i), funds.get(commands.get(i)));
                 initialFunds.add(commands.get(i));
@@ -28,7 +29,9 @@ public class Portfolio_Implementation{
 
     // Adding stocks to the funds in the users portfolio
     public void addStock(List<String> commands){
-        if(!portfolioFunds.containsKey(commands.get(fundName))) System.out.println("FUND_NOT_FOUND");
+        if(!portfolioFunds.containsKey(commands.get(fundName))) {
+            System.out.println("FUND_NOT_FOUND");
+        }
         else {
             List<String> stocks = portfolioFunds.get(commands.get(fundName));
             stocks.add(commands.get(stockName));
