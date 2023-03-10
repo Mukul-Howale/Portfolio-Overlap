@@ -1,56 +1,60 @@
 package com.example.geektrust;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class Portfolio_Implementation{
-    List<Funds_POJO> funds;
-    List<Funds_POJO> portfolioFunds;
+    private final int fundName = 1;
+    private final int stockName = 2;
+    private final Map<String, List<String>> portfolioFunds;
+    private final List<String> initialFunds;
+    Map<String, List<String>> funds;
 
-    public Portfolio_Implementation(List<Funds_POJO> funds){
+    public Portfolio_Implementation(Map<String, List<String>> funds){
         this.funds = funds;
-        portfolioFunds = new ArrayList<>();
+        portfolioFunds = new HashMap<>();
+        initialFunds = new ArrayList<>();
     }
 
+    // Creating a new portfolio with added funds
     public void createPortfolio(List<String> commands){
         for(int i=1; i<commands.size(); i++){
-            for(Funds_POJO fund : funds){
-                if(commands.get(i).equals(fund.getName())) portfolioFunds.add(fund);
+            if(!funds.containsKey(commands.get(i))) System.out.println("FUND_NOT_FOUND");
+            else {
+                portfolioFunds.put(commands.get(i), funds.get(commands.get(i)));
+                initialFunds.add(commands.get(i));
             }
         }
     }
+
+    // Adding stocks to the funds in the users portfolio
     public void addStock(List<String> commands){
-        for(Funds_POJO fund : portfolioFunds){
-            if(commands.get(1).equals(fund.getName())){
-                List<String> words = commands.subList(2,commands.size());
-                String stock = String.join(" ",words);
-                fund.addStock(stock);
-                break;
-            }
-            else{
-                System.out.println("FUND_NOT_FOUND");
-            }
+        if(!portfolioFunds.containsKey(commands.get(fundName))) System.out.println("FUND_NOT_FOUND");
+        else {
+            List<String> stocks = portfolioFunds.get(commands.get(fundName));
+            stocks.add(commands.get(stockName));
+            portfolioFunds.put(commands.get(fundName), stocks);
         }
     }
+
+    // Calculating overlap of stocks in funds
     public void calculateOverlap(List<String> commands){
         float commonStocks = 0;
-        HashSet<String> totalStocks = new HashSet<>();
+        HashSet<String> totalStocks;
 
-        for(Funds_POJO fund : funds){
-            if(fund.getName().equals(commands.get(1))) {
-                totalStocks.addAll(fund.getStocks());
-                break;
-            }
+        if(!funds.containsKey(commands.get(fundName))) {
+            System.out.println("FUND_NOT_FOUND");
+            return;
         }
-        for(Funds_POJO fund : portfolioFunds){
-            HashSet<String> currentStocks = new HashSet<>(fund.getStocks());
+        else totalStocks = new HashSet<>(funds.get(commands.get(fundName)));
+
+        for(String funds : initialFunds){
+            HashSet<String> currentStocks = new HashSet<>(portfolioFunds.get(funds));
             for(String stock : currentStocks){
                 if(totalStocks.contains(stock)) commonStocks++;
             }
             float totalStockSize = currentStocks.size() + totalStocks.size();
             float overlappingPercentage = (2*(commonStocks)/totalStockSize)*100;
-            System.out.println(commands.get(1) + " " + fund.getName() + " " + String.format("%.2f",overlappingPercentage) + "%");
+            System.out.println(commands.get(1) + " " + funds + " " + String.format("%.2f",overlappingPercentage) + "%");
             commonStocks = 0;
         }
     }
