@@ -1,5 +1,8 @@
 # Portfolio-Overlap
 
+This problem is from the geektrust challenges.  
+[Problem statement](https://www.geektrust.com/coding/detailed/portfolio-overlap)
+
 # Pre-requisites
 * Java 1.8/1.11/1.15
 * Maven
