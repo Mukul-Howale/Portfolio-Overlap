@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Portfolio {
     private final int fundName = 1;
-    private final int stockName = 2;
     private final Map<String, List<String>> portfolioFunds = new HashMap<>();
     private final List<String> initialFunds = new ArrayList<>();
     Map<String, List<String>> funds;
@@ -15,64 +14,53 @@ public class Portfolio {
 
     // Creating a new portfolio with added funds
     public void createPortfolio(List<String> commands){
-        try {
-            for(int i=1; i<commands.size(); i++){
-                if(!funds.containsKey(commands.get(i))) {
-                    System.out.println("FUND_NOT_FOUND");
-                    break;
-                }
-                else {
-                    portfolioFunds.put(commands.get(i), funds.get(commands.get(i)));
-                    initialFunds.add(commands.get(i));
-                }
+        for(int i=1; i<commands.size(); i++){
+            if(!funds.containsKey(commands.get(i))) {
+                System.out.println("FUND_NOT_FOUND");
+                break;
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            else {
+                portfolioFunds.put(commands.get(i), funds.get(commands.get(i)));
+                initialFunds.add(commands.get(i));
+            }
         }
     }
 
     // Adding stocks to the funds in the users portfolio
     public void addStock(List<String> commands){
-        try {
-            if(commands.size() > 3) commands = removeSpaceInFundName(commands);
-            if(!portfolioFunds.containsKey(commands.get(fundName))) {
-                System.out.println("FUND_NOT_FOUND");
-            }
-            else {
-                List<String> stocks = portfolioFunds.get(commands.get(fundName));
-                stocks.add(commands.get(stockName));
-                portfolioFunds.put(commands.get(fundName), stocks);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if(commands.size() > 3) commands = removeSpaceInFundName(commands);
+        if(!portfolioFunds.containsKey(commands.get(fundName))) {
+            System.out.println("FUND_NOT_FOUND");
+        }
+        else {
+            List<String> stocks = portfolioFunds.get(commands.get(fundName));
+            int stockName = 2;
+            stocks.add(commands.get(stockName));
+            portfolioFunds.put(commands.get(fundName), stocks);
         }
     }
 
     // Calculating overlap of stocks in funds
     public void calculateOverlap(List<String> commands){
-        try {
-            float commonStocks = 0;
-            HashSet<String> totalStocks;
+        float commonStocks = 0;
+        HashSet<String> totalStocks;
 
-            if(!funds.containsKey(commands.get(fundName))) {
-                System.out.println("FUND_NOT_FOUND");
-                return;
-            }
-            else totalStocks = new HashSet<>(funds.get(commands.get(fundName)));
+        if(!funds.containsKey(commands.get(fundName))) {
+            System.out.println("FUND_NOT_FOUND");
+            return;
+        }
+        else totalStocks = new HashSet<>(funds.get(commands.get(fundName)));
 
-            for(String funds : initialFunds){
-                HashSet<String> currentStocks = new HashSet<>(portfolioFunds.get(funds));
-                for(String stock : currentStocks){
-                    if(totalStocks.contains(stock)) commonStocks++;
-                }
-                if(commonStocks == 0) continue;
-                float totalStockSize = currentStocks.size() + totalStocks.size();
-                float overlappingPercentage = (2*(commonStocks)/totalStockSize)*100;
-                System.out.println(commands.get(1) + " " + funds + " " + String.format("%.2f",overlappingPercentage) + "%");
-                commonStocks = 0;
+        for(String funds : initialFunds){
+            HashSet<String> currentStocks = new HashSet<>(portfolioFunds.get(funds));
+            for(String stock : currentStocks){
+                if(totalStocks.contains(stock)) commonStocks++;
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            if(commonStocks == 0) continue;
+            float totalStockSize = currentStocks.size() + totalStocks.size();
+            float overlappingPercentage = (2 * (commonStocks)/totalStockSize) * 100;
+            System.out.println(commands.get(1) + " " + funds + " " + String.format("%.2f",overlappingPercentage) + "%");
+            commonStocks = 0;
         }
     }
 
@@ -83,7 +71,8 @@ public class Portfolio {
             sb.append(commands.get(i));
             if(i != commands.size()-1) sb.append(" ");
         }
-        newCommands.add(0, commands.get(0));
+        int command = 0;
+        newCommands.add(0, commands.get(command));
         newCommands.add(1, commands.get(fundName));
         newCommands.add(2, sb.toString());
         return newCommands;
