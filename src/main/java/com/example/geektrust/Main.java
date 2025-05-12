@@ -22,12 +22,8 @@ public class Main {
                     .map(line -> Arrays.asList(line.split(" ")))
                     .collect(Collectors.toList());
 
-            // Converting json data to map
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonNode = mapper.readTree(new URL("https://geektrust.s3.ap-southeast-1.amazonaws.com/portfolio-overlap/stock_data.json"));
-            List<Funds_POJO> list = mapper.convertValue(jsonNode.findParents("name"), new TypeReference<List<Funds_POJO>>(){});
-            Map<String, List<String>> funds = list.stream().collect(Collectors.toMap(Funds_POJO::getName, Funds_POJO::getStocks));
-            executeCommands(inputList,funds);
+
+            executeCommands(inputList,convertJSONToMap());
         }
         catch(MalformedURLException e) {
             e.printStackTrace();
@@ -39,12 +35,20 @@ public class Main {
 
     // Executing each query
     private static void executeCommands(List<List<String>> inputList, Map<String, List<String>> funds) {
-        Portfolio_Implementation portfolio = new Portfolio_Implementation(funds);
+        Portfolio portfolio = new Portfolio(funds);
         for(List<String> commands : inputList){
             String command = commands.get(0);
             if(command.equals(Commands.CURRENT_PORTFOLIO.toString())) portfolio.createPortfolio(commands);
             else if(command.equals(Commands.ADD_STOCK.toString())) portfolio.addStock(commands);
             else if(command.equals(Commands.CALCULATE_OVERLAP.toString()))portfolio.calculateOverlap(commands);
         }
+    }
+
+    private static Map<String, List<String>> convertJSONToMap() throws IOException {
+        // Converting json data to map
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(new URL("https://geektrust.s3.ap-southeast-1.amazonaws.com/portfolio-overlap/stock_data.json"));
+        List<Funds> list = mapper.convertValue(jsonNode.findParents("name"), new TypeReference<List<Funds>>(){});
+        return list.stream().collect(Collectors.toMap(Funds::getName, Funds::getStocks));
     }
 }

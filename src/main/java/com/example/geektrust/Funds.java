@@ -3,7 +3,7 @@ package com.example.geektrust;
 import java.util.List;
 
 // This is a POJO class
-public class Funds_POJO {
+public class Funds {
     private String name;
     private List<String> stocks;
 

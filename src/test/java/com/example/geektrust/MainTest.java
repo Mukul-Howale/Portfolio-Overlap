@@ -18,7 +18,7 @@ public class MainTest {
     private final PrintStream standardOut = System.out;
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 
-    Portfolio_Implementation portfolioImplementation;
+    private Portfolio portfolioImplementation;
 
     @BeforeEach
     void setUp(){
@@ -29,12 +29,12 @@ public class MainTest {
         stocks.add("INTERGLOBE AVIATION LIMITED");
         Map<String, List<String>> funds = new HashMap<>();
         funds.put("ICICI_PRU_NIFTY_NEXT_50_INDEX",stocks);
-        portfolioImplementation = new Portfolio_Implementation(funds);
+        portfolioImplementation = new Portfolio(funds);
         System.setOut(new PrintStream(outputStreamCaptor));
     }
 
     @Test
-    void testNoFunds_whileCreatingPortfolio(){
+    void testNoFundFound_whileCreatingPortfolio(){
         List<String> commands = new ArrayList<>();
         commands.add("CURRENT_PORTFOLIO");
         commands.add("AXIS_BLUECHIP");
@@ -43,7 +43,7 @@ public class MainTest {
     }
 
     @Test
-    void testNoFunds_whileAddingStock(){
+    void testNoFundFound_whileAddingStock(){
         List<String> commands = new ArrayList<>();
         commands.add("ADD_STOCK");
         commands.add("AXIS_BLUECHIP");
@@ -53,11 +53,20 @@ public class MainTest {
     }
 
     @Test
-    void testNoFunds_whileCalculatingOverlap(){
+    void testNoFundFound_whileCalculatingOverlap(){
         List<String> commands = new ArrayList<>();
         commands.add("ADD_STOCK");
         commands.add("AXIS_BLUECHIP");
         commands.add("TCS");
+        portfolioImplementation.calculateOverlap(commands);
+        assertEquals("FUND_NOT_FOUND", outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void testNoFundFound_whileNoFundAdded(){
+        List<String> commands = new ArrayList<>();
+        commands.add("ADD_STOCK");
+        commands.add("AXIS_BLUECHIP");
         portfolioImplementation.calculateOverlap(commands);
         assertEquals("FUND_NOT_FOUND", outputStreamCaptor.toString().trim());
     }
