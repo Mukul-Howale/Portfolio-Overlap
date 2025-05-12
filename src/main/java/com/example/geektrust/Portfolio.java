@@ -28,7 +28,7 @@ public class Portfolio {
 
     // Adding stocks to the funds in the users portfolio
     public void addStock(List<String> commands){
-        if(commands.size() > 3) commands = removeSpaceInFundName(commands);
+        if(commands.size() > 3) commands = Helper.removeSpaceInFundName(commands);
         if(!portfolioFunds.containsKey(commands.get(fundName))) {
             System.out.println("FUND_NOT_FOUND");
         }
@@ -57,24 +57,8 @@ public class Portfolio {
                 if(totalStocks.contains(stock)) commonStocks++;
             }
             if(commonStocks == 0) continue;
-            float totalStockSize = currentStocks.size() + totalStocks.size();
-            float overlappingPercentage = (2 * (commonStocks)/totalStockSize) * 100;
-            System.out.println(commands.get(1) + " " + funds + " " + String.format("%.2f",overlappingPercentage) + "%");
+            Helper.printOverlapPercentage(commands, funds, commonStocks, currentStocks.size(), totalStocks.size());
             commonStocks = 0;
         }
-    }
-
-    private List<String> removeSpaceInFundName(List<String> commands){
-        List<String> newCommands = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-        for(int i=2; i<commands.size(); i++){
-            sb.append(commands.get(i));
-            if(i != commands.size()-1) sb.append(" ");
-        }
-        int command = 0;
-        newCommands.add(0, commands.get(command));
-        newCommands.add(1, commands.get(fundName));
-        newCommands.add(2, sb.toString());
-        return newCommands;
     }
 }
